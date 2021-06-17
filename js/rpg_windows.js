@@ -1,5 +1,5 @@
 //=============================================================================
-// rpg_windows.js v1.5.2
+// rpg_windows.js v1.5.1
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -462,6 +462,7 @@ Window_Base.prototype.drawCharacter = function(characterName, characterIndex, x,
     this.contents.blt(bitmap, sx, sy, pw, ph, x - pw / 2, y - ph);
 };
 
+//各ゲージの処理
 Window_Base.prototype.drawGauge = function(x, y, width, rate, color1, color2) {
     var fillW = Math.floor(width * rate);
     var gaugeY = y + this.lineHeight() - 8;
@@ -502,13 +503,13 @@ Window_Base.prototype.drawActorName = function(actor, x, y, width) {
 };
 
 Window_Base.prototype.drawActorClass = function(actor, x, y, width) {
-    width = width || 168;
+    width = width || 468; //168アクター職業名を全部表示しちゃうやつ
     this.resetTextColor();
     this.drawText(actor.currentClass().name, x, y, width);
 };
 
 Window_Base.prototype.drawActorNickname = function(actor, x, y, width) {
-    width = width || 270;
+    width = width || 170;//270
     this.resetTextColor();
     this.drawText(actor.nickname(), x, y, width);
 };
@@ -549,10 +550,10 @@ Window_Base.prototype.drawCurrentAndMax = function(current, max, x, y,
 };
 
 Window_Base.prototype.drawActorHp = function(actor, x, y, width) {
-    width = width || 186;
+    width = width || 186;// if ($gameParty.inBattle()) {｝←これで下の処理を囲むと戦闘中だけHPゲージがだせる
     var color1 = this.hpGaugeColor1();
     var color2 = this.hpGaugeColor2();
-    this.drawGauge(x, y, width, actor.hpRate(), color1, color2);
+    this.drawGauge(x, y, width, actor.hpRate(), color1, color2);//HPゲージ処理
     this.changeTextColor(this.systemColor());
     this.drawText(TextManager.hpA, x, y, 44);
     this.drawCurrentAndMax(actor.hp, actor.mhp, x, y, width,
@@ -563,7 +564,7 @@ Window_Base.prototype.drawActorMp = function(actor, x, y, width) {
     width = width || 186;
     var color1 = this.mpGaugeColor1();
     var color2 = this.mpGaugeColor2();
-    this.drawGauge(x, y, width, actor.mpRate(), color1, color2);
+    this.drawGauge(x, y, width, actor.mpRate(), color1, color2);//MPゲージ処理
     this.changeTextColor(this.systemColor());
     this.drawText(TextManager.mpA, x, y, 44);
     this.drawCurrentAndMax(actor.mp, actor.mmp, x, y, width,
@@ -1480,7 +1481,7 @@ Window_Help.prototype.constructor = Window_Help;
 
 Window_Help.prototype.initialize = function(numLines) {
     var width = Graphics.boxWidth;
-    var height = this.fittingHeight(numLines || 2);
+    var height = this.fittingHeight(numLines || 4);//スキルやアイテムの説明欄
     Window_Base.prototype.initialize.call(this, 0, 0, width, height);
     this._text = '';
 };
@@ -1587,9 +1588,9 @@ Window_MenuCommand.prototype.makeCommandList = function() {
     this.addMainCommands();
     this.addFormationCommand();
     this.addOriginalCommands();
-    this.addOptionsCommand();
+    //this.addOptionsCommand();
     this.addSaveCommand();
-    this.addGameEndCommand();
+    //this.addGameEndCommand();
 };
 
 Window_MenuCommand.prototype.addMainCommands = function() {
@@ -2033,7 +2034,7 @@ Window_SkillType.prototype.initialize = function(x, y) {
 };
 
 Window_SkillType.prototype.windowWidth = function() {
-    return 240;
+    return 408;//スキルタイム選択ウィンドウ横幅
 };
 
 Window_SkillType.prototype.setActor = function(actor) {
@@ -2044,8 +2045,12 @@ Window_SkillType.prototype.setActor = function(actor) {
     }
 };
 
+Window_SkillType.prototype.maxCols = function() {
+    return 1;//スキル選択ウィンドウ横幅
+};
+
 Window_SkillType.prototype.numVisibleRows = function() {
-    return 4;
+    return 3;//スキル選択ウィンドウ縦幅
 };
 
 Window_SkillType.prototype.makeCommandList = function() {
@@ -2121,7 +2126,7 @@ Window_SkillStatus.prototype.refresh = function() {
 //-----------------------------------------------------------------------------
 // Window_SkillList
 //
-// The window for selecting a skill on the skill screen.
+// スキル画面でスキルを選択するためのウィンドウ。
 
 function Window_SkillList() {
     this.initialize.apply(this, arguments);
@@ -2154,7 +2159,7 @@ Window_SkillList.prototype.setStypeId = function(stypeId) {
 };
 
 Window_SkillList.prototype.maxCols = function() {
-    return 2;
+    return 1;//スキルリストの列の数
 };
 
 Window_SkillList.prototype.spacing = function() {
@@ -2512,8 +2517,7 @@ Window_EquipItem.prototype.playOkSound = function() {
 
 //-----------------------------------------------------------------------------
 // Window_Status
-//
-// The window for displaying full status on the status screen.
+// ステータスウィンドウを編集する。
 
 function Window_Status() {
     this.initialize.apply(this, arguments);
@@ -2543,35 +2547,34 @@ Window_Status.prototype.refresh = function() {
     if (this._actor) {
         var lineHeight = this.lineHeight();
         this.drawBlock1(lineHeight * 0);
-        this.drawHorzLine(lineHeight * 1);
-        this.drawBlock2(lineHeight * 2);
-        this.drawHorzLine(lineHeight * 6);
-        this.drawBlock3(lineHeight * 7);
-        this.drawHorzLine(lineHeight * 13);
-        this.drawBlock4(lineHeight * 14);
+        this.drawHorzLine(lineHeight * 5);
+        this.drawBlock2(lineHeight * 6);
+        this.drawHorzLine(lineHeight * 12 + 13);
+        this.drawBlock3(lineHeight * 13);
     }
 };
 
+
+
 Window_Status.prototype.drawBlock1 = function(y) {
-    this.drawActorName(this._actor, 6, y);
-    this.drawActorClass(this._actor, 192, y);
-    this.drawActorNickname(this._actor, 432, y);
+    var GYOU = this.lineHeight();
+    this.drawActorFace(this._actor, 0, y);
+    this.drawBasicInfo(150, y);
+    this.drawExpInfo(0, y+ GYOU*4+10);
+
 };
+
 
 Window_Status.prototype.drawBlock2 = function(y) {
-    this.drawActorFace(this._actor, 12, y);
-    this.drawBasicInfo(204, y);
-    this.drawExpInfo(456, y);
+    this.drawParameters(0, y+4);
 };
+
 
 Window_Status.prototype.drawBlock3 = function(y) {
-    this.drawParameters(48, y);
-    this.drawEquipments(432, y);
+    this.drawEquipments(0, y);
 };
 
-Window_Status.prototype.drawBlock4 = function(y) {
-    this.drawProfile(6, y);
-};
+
 
 Window_Status.prototype.drawHorzLine = function(y) {
     var lineY = y + this.lineHeight() / 2 - 1;
@@ -2580,55 +2583,167 @@ Window_Status.prototype.drawHorzLine = function(y) {
     this.contents.paintOpacity = 255;
 };
 
+
 Window_Status.prototype.lineColor = function() {
     return this.normalColor();
 };
 
+
+
 Window_Status.prototype.drawBasicInfo = function(x, y) {
-    var lineHeight = this.lineHeight();
-    this.drawActorLevel(this._actor, x, y + lineHeight * 0);
-    this.drawActorIcons(this._actor, x, y + lineHeight * 1);
-    this.drawActorHp(this._actor, x, y + lineHeight * 2);
-    this.drawActorMp(this._actor, x, y + lineHeight * 3);
+    var GYOU = this.lineHeight();
+    var equips = this._actor.equips();
+
+    this.contents.gradientFillRect(x+30,y+GYOU*2,this._actor.param(0)/80, 30,this.textColor(14), this.textColor(0));
+    this.contents.gradientFillRect(x+30,y+GYOU*3,this._actor.param(1)/5, 30,this.textColor(9), this.textColor(0));
+
+    this.changeTextColor(this.systemColor());　
+    this.drawText('COST', x, y + GYOU * 1); 
+    this.drawText('進化', x+125, y + GYOU * 1); 
+    this.drawText(TextManager.param(0), x, y+GYOU*2, 160);
+    this.drawText(TextManager.param(1), x, y+GYOU*3, 160);
+    this.resetTextColor(); 
+
+    this.drawActorName(this._actor, x, y);
+    this.drawActorClass(this._actor, x+190, y);
+    this.drawActorNickname(this._actor, x+60, y+GYOU * 1);
+    this.drawText($gameVariables.value(this._actor._actorId + 300), x+185,y+GYOU*1);//acterID+300番の変数を表示
+    this.drawText(this._actor.param(0), x+30, y+GYOU*2, 300, 'left');
+    this.drawText(this._actor.param(1), x+30, y+GYOU*3, 300, 'left');
+
+    this.drawItemName(equips[0], x+210, y+GYOU*1);
+    this.drawItemName(equips[1], x+290, y+GYOU*1);
+    this.drawItemName(equips[2], x+370, y+GYOU*1 ,260);
+
+
 };
 
-Window_Status.prototype.drawParameters = function(x, y) {
-    var lineHeight = this.lineHeight();
-    for (var i = 0; i < 6; i++) {
-        var paramId = i + 2;
-        var y2 = y + lineHeight * i;
-        this.changeTextColor(this.systemColor());
-        this.drawText(TextManager.param(paramId), x, y2, 160);
-        this.resetTextColor();
-        this.drawText(this._actor.param(paramId), x + 160, y2, 60, 'right');
-    }
-};
+
+//ゲージについて(x,y,100,6,カラー)があるが、xyはゲージの位置、100,6はゲージの幅と高さ
 
 Window_Status.prototype.drawExpInfo = function(x, y) {
-    var lineHeight = this.lineHeight();
-    var expTotal = TextManager.expTotal.format(TextManager.exp);
-    var expNext = TextManager.expNext.format(TextManager.level);
-    var value1 = this._actor.currentExp();
-    var value2 = this._actor.nextRequiredExp();
+    var value1 = this._actor.nextRequiredExp();
+    var value2 = this._actor.currentExp();
+    var value3 = this._actor.nextLevelExp();
+
     if (this._actor.isMaxLevel()) {
         value1 = '-------';
-        value2 = '-------';
+        value3 = '-------';
     }
+
+    this.contents.fillRect(x+130,180, 630, 6, this.gaugeBackColor());
+    this.contents.gradientFillRect(x+130,180, value2 / value3 * 630, 6,this.textColor(27), this.textColor(0));
+    
+    this.contents.fontSize = 40;
     this.changeTextColor(this.systemColor());
-    this.drawText(expTotal, x, y + lineHeight * 0, 270);
-    this.drawText(expNext, x, y + lineHeight * 2, 270);
+    this.drawText(TextManager.levelA, x+0, y, 100);
     this.resetTextColor();
-    this.drawText(value1, x, y + lineHeight * 1, 270, 'right');
-    this.drawText(value2, x, y + lineHeight * 3, 270, 'right');
+    this.drawText(this._actor.level, x+84, y, 36, 'left');
+    this.contents.fontSize = this.standardFontSize();
+
+    this.changeTextColor(this.systemColor());
+    this.drawText('Next', x+130, y , 270);
+    this.drawText('/', x+632, y , 270);
+    this.resetTextColor();
+    this.drawText(value1, x+190, y, 200, 'left');
+    this.drawText(value2, x+430, y, 200, 'right');
+    this.drawText(value3, x+650, y, 200, 'left');
 };
+
+
+
+//キャラクターのパラメーター表示
+//上から攻撃力～ラッキーまでの６つ
+
+Window_Status.prototype.drawParameters = function(x, y) {
+        var GYOU = this.lineHeight();
+        var equips = this._actor.equips();
+
+        this.contents.gradientFillRect(x+45,y+GYOU*0,this._actor.param(2)/2, 30,this.textColor(24), this.textColor(0));
+        this.contents.gradientFillRect(x+45,y+GYOU*1,this._actor.param(3)/2, 30,this.textColor(24), this.textColor(0));
+        this.contents.gradientFillRect(x+45,y+GYOU*2,this._actor.param(4)/2, 30,this.textColor(24), this.textColor(0));
+        this.contents.gradientFillRect(x+45,y+GYOU*3,this._actor.param(5)/2, 30,this.textColor(24), this.textColor(0));
+        this.contents.gradientFillRect(x+45,y+GYOU*4,this._actor.param(6)/2, 30,this.textColor(24), this.textColor(0));
+        this.contents.gradientFillRect(x+45,y+GYOU*5,this._actor.param(7)/2, 30,this.textColor(24), this.textColor(0));
+
+       this.changeTextColor(this.systemColor());
+        this.drawText(TextManager.param(2), x, y+GYOU*0, 160);
+        this.drawText(TextManager.param(3), x, y+GYOU*1, 160);
+        this.drawText(TextManager.param(4), x, y+GYOU*2, 160);
+        this.drawText(TextManager.param(5), x, y+GYOU*3, 160);
+        this.drawText(TextManager.param(6), x, y+GYOU*4, 160);
+        this.drawText(TextManager.param(7), x, y+GYOU*5, 160);
+       this.resetTextColor();
+        this.drawText(this._actor.param(2), x + 45, y+GYOU*0, 60, 'left');
+        this.drawText(this._actor.param(3), x + 45, y+GYOU*1, 60, 'left');
+        this.drawText(this._actor.param(4), x + 45, y+GYOU*2, 60, 'left');
+        this.drawText(this._actor.param(5), x + 45, y+GYOU*3, 60, 'left');
+        this.drawText(this._actor.param(6), x + 45, y+GYOU*4, 60, 'left');
+        this.drawText(this._actor.param(7), x + 45, y+GYOU*5, 60, 'left');
+
+
+//ここから二行目
+//上から命中率～会心率、HPMPST再生
+
+       this.changeTextColor(this.systemColor());
+        this.drawText(TextManager.param(8), x+250, y+GYOU*0, 160);
+        this.drawText(TextManager.param(9), x+250, y+GYOU*1, 160); 
+        this.drawText('CRI', x+250, y+GYOU*2, 160); 
+        this.drawText('HP+', x+250, y+GYOU*3, 160);
+        this.drawText('MP+', x+250, y+GYOU*4, 160);
+        this.drawText('ST+', x+250, y+GYOU*5, 160);
+       this.resetTextColor();
+        this.drawText(Math.floor(this._actor.xparam(0)*100), x+275 , y+GYOU*0, 60, 'right');
+        this.drawText(Math.floor(this._actor.xparam(1)*100), x+275 , y+GYOU*1, 60, 'right');
+        this.drawText(Math.floor(this._actor.xparam(2)*100), x+275 , y+GYOU*2, 60, 'right');
+        this.drawText(Math.floor(this._actor.xparam(7)*100), x+275 , y+GYOU*3, 60, 'right');
+        this.drawText(Math.floor(this._actor.xparam(8)*100), x+275 , y+GYOU*4, 60, 'right'); 
+        this.drawText(Math.floor(this._actor.xparam(9)*100), x+275 , y+GYOU*5, 60, 'right');
+
+//「％」を６個並べる
+       this.changeTextColor(this.systemColor());
+        this.drawText('％', x+335, y+GYOU*0, 160);
+        this.drawText('％', x+335, y+GYOU*1, 160);
+        this.drawText('％', x+335, y+GYOU*2, 160);
+        this.drawText('％', x+335, y+GYOU*3, 160);
+        this.drawText('％', x+335, y+GYOU*4, 160);
+        this.drawText('％', x+335, y+GYOU*5, 160);
+       this.resetTextColor();
+
+//アクセ一覧
+        this.drawItemName(equips[9],  x+370, y+GYOU*0 - 15);
+        this.drawItemName(equips[10], x+370, y+GYOU*1 - 15);
+        this.drawItemName(equips[11], x+370, y+GYOU*2 - 15);
+        this.drawItemName(equips[12], x+370, y+GYOU*3 - 15);
+        this.drawItemName(equips[13], x+370, y+GYOU*4 - 15);
+        this.drawItemName(equips[14], x+370, y+GYOU*5 - 15);
+        this.drawItemName(equips[15], x+370, y+GYOU*6 - 15);
+
+
+};
+
+
+//装備一覧　3列目の処理になる
 
 Window_Status.prototype.drawEquipments = function(x, y) {
     var equips = this._actor.equips();
-    var count = Math.min(equips.length, this.maxEquipmentLines());
-    for (var i = 0; i < count; i++) {
-        this.drawItemName(equips[i], x, y + this.lineHeight() * i);
-    }
+    var GYOU = this.lineHeight();
+
+        this.drawItemName(equips[3], x, y+GYOU*0);
+        this.drawItemName(equips[4], x+408, y+GYOU*0);
+        this.drawItemName(equips[5], x, y+GYOU*1);
+        this.drawItemName(equips[6], x+408, y+GYOU*1);
+        this.drawItemName(equips[7], x, y+GYOU*2);
+        this.drawItemName(equips[8], x+408, y+GYOU*2);
 };
+
+
+
+
+
+
+
+
 
 Window_Status.prototype.drawProfile = function(x, y) {
     this.drawTextEx(this._actor.profile(), x, y);
@@ -2933,7 +3048,7 @@ Window_ShopBuy.prototype.initialize = function(x, y, height, shopGoods) {
 };
 
 Window_ShopBuy.prototype.windowWidth = function() {
-    return 456;
+    return 556;//買い物の商品一覧の幅
 };
 
 Window_ShopBuy.prototype.maxItems = function() {
@@ -3060,7 +3175,7 @@ Window_ShopNumber.prototype.initialize = function(x, y, height) {
 };
 
 Window_ShopNumber.prototype.windowWidth = function() {
-    return 456;
+    return 556;//買い物の商品のステータス一覧の幅
 };
 
 Window_ShopNumber.prototype.number = function() {
@@ -3322,34 +3437,63 @@ Window_ShopStatus.prototype.statusMembers = function() {
     return $gameParty.members().slice(start, end);
 };
 
+
+
 Window_ShopStatus.prototype.pageSize = function() {
-    return 4;
+    return 1;
 };
+
+//===========================================================
+//ショップウィンドウこのあたりいじってる
+//===========================================================
+
+Window_ShopStatus.prototype.drawParamName = function(x, y, paramId) {
+    this.changeTextColor(this.systemColor());
+    this.drawText(TextManager.param(paramId), x, y, 120);
+};
+
 
 Window_ShopStatus.prototype.maxPages = function() {
     return Math.floor(($gameParty.size() + this.pageSize() - 1) / this.pageSize());
 };
 
+
+
 Window_ShopStatus.prototype.drawActorEquipInfo = function(x, y, actor) {
     var enabled = actor.canEquip(this._item);
-    this.changePaintOpacity(enabled);
+    //this.changePaintOpacity(enabled);
     this.resetTextColor();
-    this.drawText(actor.name(), x, y, 168);
+    //this.drawText(actor.name(), x, y - 30, 168);
+    
+    	for(var i = 0;i < 8;i++){
+		this.drawParamName(x,60 + i*35,i);
+	}
+	
+	
     var item1 = this.currentEquippedItem(actor, this._item.etypeId);
     if (enabled) {
         this.drawActorParamChange(x, y, actor, item1);
     }
-    this.drawItemName(item1, x, y + this.lineHeight());
+    //this.drawItemName(item1, x, y + this.lineHeight() - 25);
     this.changePaintOpacity(true);
 };
 
 Window_ShopStatus.prototype.drawActorParamChange = function(x, y, actor, item1) {
     var width = this.contents.width - this.textPadding() - x;
-    var paramId = this.paramId();
-    var change = this._item.params[paramId] - (item1 ? item1.params[paramId] : 0);
-    this.changeTextColor(this.paramchangeTextColor(change));
-    this.drawText((change > 0 ? '+' : '') + change, x, y, width, 'right');
+    var changeParams = new Array(8);
+	for(var i = 0;i < 8;i++){
+		changeParams[i] = this._item.params[i] - (item1 ? item1.params[i] : 0);
+		console.log(changeParams[i] );
+		this.changeTextColor(this.paramchangeTextColor(changeParams[i] ) );
+		this.drawText( (changeParams[i] > 0 ? '+' : '') + changeParams[i], x, 60 + i*35, width, 'right');
+	}
 };
+
+//===========================================================
+//ショップウィンドウこのあたりまで
+//===========================================================
+
+
 
 Window_ShopStatus.prototype.paramId = function() {
     return DataManager.isWeapon(this._item) ? 2 : 3;
@@ -5317,7 +5461,7 @@ Window_BattleLog.prototype.makeTpDamageText = function(target) {
 //-----------------------------------------------------------------------------
 // Window_PartyCommand
 //
-// The window for selecting whether to fight or escape on the battle screen.
+// 戦闘画面で戦闘するか逃げるかを選択するウィンドウ。 
 
 function Window_PartyCommand() {
     this.initialize.apply(this, arguments);
@@ -5338,7 +5482,7 @@ Window_PartyCommand.prototype.windowWidth = function() {
 };
 
 Window_PartyCommand.prototype.numVisibleRows = function() {
-    return 4;
+    return 2;
 };
 
 Window_PartyCommand.prototype.makeCommandList = function() {
@@ -5358,7 +5502,7 @@ Window_PartyCommand.prototype.setup = function() {
 //-----------------------------------------------------------------------------
 // Window_ActorCommand
 //
-// The window for selecting an actor's action on the battle screen.
+// バトル画面でアクターの行動を選択するためのウィンドウ。
 
 function Window_ActorCommand() {
     this.initialize.apply(this, arguments);
@@ -5380,7 +5524,7 @@ Window_ActorCommand.prototype.windowWidth = function() {
 };
 
 Window_ActorCommand.prototype.numVisibleRows = function() {
-    return 4;
+    return 6;
 };
 
 Window_ActorCommand.prototype.makeCommandList = function() {
@@ -5453,7 +5597,7 @@ Window_ActorCommand.prototype.selectLast = function() {
 //-----------------------------------------------------------------------------
 // Window_BattleStatus
 //
-// The window for displaying the status of party members on the battle screen.
+// バトル画面でパーティーメンバーのステータスを表示するウィンドウ。
 
 function Window_BattleStatus() {
     this.initialize.apply(this, arguments);
@@ -5481,7 +5625,7 @@ Window_BattleStatus.prototype.windowHeight = function() {
 };
 
 Window_BattleStatus.prototype.numVisibleRows = function() {
-    return 4;
+    return 5;
 };
 
 Window_BattleStatus.prototype.maxItems = function() {
@@ -5512,14 +5656,17 @@ Window_BattleStatus.prototype.gaugeAreaRect = function(index) {
     return rect;
 };
 
+//ゲージエリア
 Window_BattleStatus.prototype.gaugeAreaWidth = function() {
-    return 330;
+   return this.width / 2 + this.standardPadding();
 };
 
+//キャラクター名
 Window_BattleStatus.prototype.drawBasicArea = function(rect, actor) {
-    this.drawActorName(actor, rect.x + 0, rect.y, 150);
-    this.drawActorIcons(actor, rect.x + 156, rect.y, rect.width - 156);
+    this.drawActorName(actor, rect.x + 0, rect.y, 101);
+    this.drawActorIcons(actor, rect.x + 106, rect.y, 400);
 };
+
 
 Window_BattleStatus.prototype.drawGaugeArea = function(rect, actor) {
     if ($dataSystem.optDisplayTp) {
@@ -5529,21 +5676,28 @@ Window_BattleStatus.prototype.drawGaugeArea = function(rect, actor) {
     }
 };
 
+//HPMPTPゲージ
 Window_BattleStatus.prototype.drawGaugeAreaWithTp = function(rect, actor) {
-    this.drawActorHp(actor, rect.x + 0, rect.y, 108);
-    this.drawActorMp(actor, rect.x + 123, rect.y, 96);
-    this.drawActorTp(actor, rect.x + 234, rect.y, 96);
-};
+   this.drawActorHp(actor, rect.x + 90, rect.y, 90);
+   this.drawActorMp(actor, rect.x + 184, rect.y, 80);
+   this.drawActorTp(actor, rect.x + 268, rect.y, 70);
 
+};
+//とりまこれ
 Window_BattleStatus.prototype.drawGaugeAreaWithoutTp = function(rect, actor) {
-    this.drawActorHp(actor, rect.x + 0, rect.y, 201);
-    this.drawActorMp(actor, rect.x + 216,  rect.y, 114);
+    var totalArea = this.gaugeAreaWidth() - 15;
+    var hpW = parseInt(totalArea * 201 / 315);
+    var otW = parseInt(totalArea * 114 / 315);
+    this.drawActorHp(actor, rect.x + 0, rect.y, hpW);
+    this.drawActorMp(actor, rect.x + hpW + 15,  rect.y, otW);    
+    //this.drawActorHp(actor, rect.x + 0, rect.y, 201);元々の数値　ここから上5行分が新
+    //this.drawActorMp(actor, rect.x + 216,  rect.y, 114);
 };
 
 //-----------------------------------------------------------------------------
 // Window_BattleActor
 //
-// The window for selecting a target actor on the battle screen.
+//  バトル画面で対象のアクターを選択するためのウィンドウ。
 
 function Window_BattleActor() {
     this.initialize.apply(this, arguments);
@@ -5582,7 +5736,7 @@ Window_BattleActor.prototype.actor = function() {
 //-----------------------------------------------------------------------------
 // Window_BattleEnemy
 //
-// The window for selecting a target enemy on the battle screen.
+// バトル画面で対象の敵を選択するためのウィンドウ。 
 
 function Window_BattleEnemy() {
     this.initialize.apply(this, arguments);
@@ -5609,7 +5763,7 @@ Window_BattleEnemy.prototype.windowHeight = function() {
 };
 
 Window_BattleEnemy.prototype.numVisibleRows = function() {
-    return 4;
+    return 5;
 };
 
 Window_BattleEnemy.prototype.maxCols = function() {
@@ -5743,12 +5897,13 @@ Window_TitleCommand.initCommandPosition = function() {
 };
 
 Window_TitleCommand.prototype.windowWidth = function() {
-    return 240;
+    return 170;
 };
 
 Window_TitleCommand.prototype.updatePlacement = function() {
-    this.x = (Graphics.boxWidth - this.width) / 2;
-    this.y = Graphics.boxHeight - this.height - 96;
+    this.x = 646//(Graphics.boxWidth - this.width) / 2;
+    this.y = Graphics.boxHeight - this.height - 16;
+    this.setBackgroundType(2);//0通常 1暗　2透明
 };
 
 Window_TitleCommand.prototype.makeCommandList = function() {

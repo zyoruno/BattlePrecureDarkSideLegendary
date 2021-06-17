@@ -1,5 +1,5 @@
 //=============================================================================
-// rpg_scenes.js v1.5.2
+// rpg_scenes.js v1.5.1
 //=============================================================================
 
 //=============================================================================
@@ -1400,7 +1400,7 @@ Scene_Skill.prototype.onActorChange = function() {
 //-----------------------------------------------------------------------------
 // Scene_Equip
 //
-// The scene class of the equipment screen.
+// 装備画面のシーンクラス
 
 function Scene_Equip() {
     this.initialize.apply(this, arguments);
@@ -1531,7 +1531,7 @@ Scene_Equip.prototype.onActorChange = function() {
 //-----------------------------------------------------------------------------
 // Scene_Status
 //
-// The scene class of the status screen.
+// ステータス画面のシーンクラス
 
 function Scene_Status() {
     this.initialize.apply(this, arguments);
@@ -2089,7 +2089,7 @@ Scene_Shop.prototype.buyingPrice = function() {
 };
 
 Scene_Shop.prototype.sellingPrice = function() {
-    return Math.floor(this._item.price / 2);
+    return Math.floor(this._item.price / 10);
 };
 
 //-----------------------------------------------------------------------------
@@ -2222,7 +2222,7 @@ Scene_Debug.prototype.helpText = function() {
 //-----------------------------------------------------------------------------
 // Scene_Battle
 //
-// The scene class of the battle screen.
+// バトル画面のシーンクラス。
 
 function Scene_Battle() {
     this.initialize.apply(this, arguments);

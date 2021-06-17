@@ -35,7 +35,7 @@
     };
 
     Window_MenuCommand.prototype.numVisibleRows = function() {
-        return 2;
+        return 1;
     };
 
     Window_MenuStatus.prototype.windowWidth = function() {
@@ -43,17 +43,16 @@
     };
 
     Window_MenuStatus.prototype.windowHeight = function() {
-        var h1 = this.fittingHeight(1);
-        var h2 = this.fittingHeight(2);
-        return Graphics.boxHeight - h1 - h2;
+       
+        return 552
     };
 
     Window_MenuStatus.prototype.maxCols = function() {
-        return 4;
+        return 5;
     };
 
     Window_MenuStatus.prototype.numVisibleRows = function() {
-        return 1;
+        return 4;
     };
 
     Window_MenuStatus.prototype.drawItemImage = function(index) {
@@ -63,7 +62,7 @@
         var h = Math.min(rect.height, 144);
         var lineHeight = this.lineHeight();
         this.changePaintOpacity(actor.isBattleMember());
-        this.drawActorFace(actor, rect.x, rect.y + lineHeight * 2.5, w, h);
+        this.drawActorFace(actor, rect.x, rect.y + lineHeight * 0, w, h);
         this.changePaintOpacity(true);
     };
 
@@ -75,12 +74,19 @@
         var width = rect.width;
         var bottom = y + rect.height;
         var lineHeight = this.lineHeight();
-        this.drawActorName(actor, x, y + lineHeight * 0, width);
-        this.drawActorLevel(actor, x, y + lineHeight * 1, width);
-        this.drawActorClass(actor, x, bottom - lineHeight * 4, width);
-        this.drawActorHp(actor, x, bottom - lineHeight * 3, width);
-        this.drawActorMp(actor, x, bottom - lineHeight * 2, width);
-        this.drawActorIcons(actor, x, bottom - lineHeight * 1, width);
+        this.drawActorName(actor, x+0, y+96,width);
+        //this.drawActorIcons(actor, x, y + lineHeight * 0, width);
+        //this.drawActorLevel(actor, x, y + lineHeight * 1, width);
+
+        this.changeTextColor(this.systemColor());//この先の文字の色を変える
+        this.drawText(TextManager.levelA,  x, y+0, 'right');//アクターのLVを表示
+        this.resetTextColor();//この先の文字の色をリセットする
+        this.drawText(actor.level, x+68, y+0, 'right');//アクターのLV実数時を表示
+
+        //this.drawActorClass(actor, x, bottom - lineHeight * 4, width);
+        //this.drawActorHp(actor, x, bottom - lineHeight * 3, width);
+        //this.drawActorMp(actor, x, bottom - lineHeight * 2, width);
+        
     };
 
     var _Window_MenuActor_initialize = Window_MenuActor.prototype.initialize;

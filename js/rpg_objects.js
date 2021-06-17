@@ -1,5 +1,5 @@
-//=============================================================================
-// rpg_objects.js v1.5.2
+﻿//=============================================================================
+// rpg_objects.js v1.5.1
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -1427,10 +1427,12 @@ Game_Action.prototype.prepare = function() {
 Game_Action.prototype.isValid = function() {
     return (this._forcing && this.item()) || this.subject().canUse(this.item());
 };
-
+//============================================================
+//すばやさでの行動順決定
+//================================================================
 Game_Action.prototype.speed = function() {
     var agi = this.subject().agi;
-    var speed = agi + Math.randomInt(Math.floor(5 + agi / 4));
+    var speed = agi + Math.randomInt(Math.floor(10));//==ここが計算式
     if (this.item()) {
         speed += this.item().speed;
     }
@@ -1720,8 +1722,10 @@ Game_Action.prototype.elementsMaxRate = function(target, elements) {
     }
 };
 
+//----------クリティカル倍率--------
+
 Game_Action.prototype.applyCritical = function(damage) {
-    return damage * 3;
+    return damage * 1.5;
 };
 
 Game_Action.prototype.applyVariance = function(damage, variance) {
@@ -1965,8 +1969,10 @@ Game_Action.prototype.applyItemUserEffect = function(target) {
     this.subject().gainSilentTp(value);
 };
 
+//----------ラッキーの状態異常確率計算
+
 Game_Action.prototype.lukEffectRate = function(target) {
-    return Math.max(1.0 + (this.subject().luk - target.luk) * 0.001, 0.0);
+    return Math.max(1.0 + (this.subject().luk - target.luk) * 0.003, 0.0);
 };
 
 Game_Action.prototype.applyGlobal = function() {
@@ -9339,20 +9345,12 @@ Game_Interpreter.prototype.command413 = function() {
 };
 
 // Break Loop
-Game_Interpreter.prototype.command113 = function () {
-    var depth = 0;
+Game_Interpreter.prototype.command113 = function() {
     while (this._index < this._list.length - 1) {
         this._index++;
         var command = this.currentCommand();
-
-        if (command.code === 112)
-            depth++;
-
         if (command.code === 413 && command.indent < this._indent) {
-            if (depth > 0)
-                depth--;
-            else
-                break;
+            break;
         }
     }
     return true;

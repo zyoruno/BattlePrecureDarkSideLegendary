@@ -1,5 +1,5 @@
 //=============================================================================
-// rpg_managers.js v1.5.2
+// rpg_managers.js v1.5.1
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -330,8 +330,11 @@ DataManager.loadSavefileImages = function(info) {
     }
 };
 
+
+//セーブファイル数変更
+
 DataManager.maxSavefiles = function() {
-    return 20;
+    return 1;
 };
 
 DataManager.saveGame = function(savefileId) {
@@ -2274,7 +2277,7 @@ BattleManager.updateEvent = function() {
                 return this.updateEventMain();
             }
     }
-    return this.checkAbort();
+    return this.checkAbort2();
 };
 
 BattleManager.updateEventMain = function() {
@@ -2622,6 +2625,14 @@ BattleManager.checkBattleEnd = function() {
 };
 
 BattleManager.checkAbort = function() {
+    if ($gameParty.isEmpty() || this.isAborting()) {
+        this.processAbort();
+        return true;
+    }
+    return false;
+};
+
+BattleManager.checkAbort2 = function() {
     if ($gameParty.isEmpty() || this.isAborting()) {
         SoundManager.playEscape();
         this._escaped = true;
