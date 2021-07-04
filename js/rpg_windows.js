@@ -2629,10 +2629,11 @@ Window_Status.prototype.drawExpInfo = function(x, y) {
     if (this._actor.isMaxLevel()) {
         value1 = '-------';
         value3 = '-------';
-    }
+    } else{
 
     this.contents.fillRect(x+130,180, 630, 6, this.gaugeBackColor());
     this.contents.gradientFillRect(x+130,180, value2 / value3 * 630, 6,this.textColor(27), this.textColor(0));
+    }
     
     this.contents.fontSize = 40;
     this.changeTextColor(this.systemColor());
