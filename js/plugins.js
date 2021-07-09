@@ -24,6 +24,7 @@ var $plugins =
 {"name":"TermsOfSkillUse","status":true,"description":"ver1.03/スキルやアイテムに詳細な使用条件を設定できます。\r\nCoditionallyCoreのプラグインが必要です。","parameters":{"Unselectable Target Color":"5","Unselectable Usable":"true"}},
 {"name":"ActionCountSwitchOn","status":false,"description":"ver1.00/行動決定前に、現在の行動回数に応じたスイッチをオンにします。","parameters":{"BaseSwitchID":"52"}},
 {"name":"BeforeCommon","status":true,"description":"ver1.01/スキルやアイテムの発動前に、スキルやアイテムに設定されたコモンイベントを発生させます。","parameters":{"IndexVariableID":"18","TargetIndexVariableID":"19"}},
+{"name":"EquippedLimit","status":true,"description":"ver1.01/計算式で装備を制限する機能を追加します。","parameters":{}},
 {"name":"ActorCommand_kai","status":true,"description":"任意のタイミングで、アイテムを選択不可にします。","parameters":{"Variable ID":"14"}},
 {"name":"CallCommonEventBeforeSkill","status":false,"description":"オーダーメイドのプラグインです。\nオーダー内容は「スキル使用前にコモンイベント」です。","parameters":{}},
 {"name":"DrainRate","status":true,"description":"与えたダメージの一部だけ吸収するスキルやアイテムを作る\nnoteに<drain_hp_rate: 0.5>のように書く","parameters":{}},
