@@ -1689,7 +1689,7 @@ Window_MenuCommand.prototype.selectLast = function() {
 };
 
 //-----------------------------------------------------------------------------
-// Window_MenuStatus
+// Window_MenuStatus　上のメニューコマンドとこのメニューステータスがメニュー画面
 //
 // The window for displaying party member status on the menu screen.
 
@@ -2660,12 +2660,12 @@ Window_Status.prototype.drawParameters = function(x, y) {
         var GYOU = this.lineHeight();
         var equips = this._actor.equips();
 
-        this.contents.gradientFillRect(x+45,y+GYOU*0,this._actor.param(2)/2, 30,this.textColor(24), this.textColor(0));
-        this.contents.gradientFillRect(x+45,y+GYOU*1,this._actor.param(3)/2, 30,this.textColor(24), this.textColor(0));
-        this.contents.gradientFillRect(x+45,y+GYOU*2,this._actor.param(4)/2, 30,this.textColor(24), this.textColor(0));
-        this.contents.gradientFillRect(x+45,y+GYOU*3,this._actor.param(5)/2, 30,this.textColor(24), this.textColor(0));
-        this.contents.gradientFillRect(x+45,y+GYOU*4,this._actor.param(6)/2, 30,this.textColor(24), this.textColor(0));
-        this.contents.gradientFillRect(x+45,y+GYOU*5,this._actor.param(7)/2, 30,this.textColor(24), this.textColor(0));
+        this.contents.gradientFillRect(x+45,y+GYOU*0,this._actor.param(2)/2.25, 30,this.textColor(24), this.textColor(0));
+        this.contents.gradientFillRect(x+45,y+GYOU*1,this._actor.param(3)/2.25, 30,this.textColor(24), this.textColor(0));
+        this.contents.gradientFillRect(x+45,y+GYOU*2,this._actor.param(4)/2.25, 30,this.textColor(24), this.textColor(0));
+        this.contents.gradientFillRect(x+45,y+GYOU*3,this._actor.param(5)/2.25, 30,this.textColor(24), this.textColor(0));
+        this.contents.gradientFillRect(x+45,y+GYOU*4,this._actor.param(6)/2.25, 30,this.textColor(24), this.textColor(0));
+        this.contents.gradientFillRect(x+45,y+GYOU*5,this._actor.param(7)/2.25, 30,this.textColor(24), this.textColor(0));
 
        this.changeTextColor(this.systemColor());
         this.drawText(TextManager.param(2), x, y+GYOU*0, 160);

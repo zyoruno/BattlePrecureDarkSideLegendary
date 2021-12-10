@@ -75,17 +75,13 @@
         var bottom = y + rect.height;
         var lineHeight = this.lineHeight();
         this.drawActorName(actor, x+0, y+96,width);
-        //this.drawActorIcons(actor, x, y + lineHeight * 0, width);
-        //this.drawActorLevel(actor, x, y + lineHeight * 1, width);
-
         this.changeTextColor(this.systemColor());//この先の文字の色を変える
         this.drawText(TextManager.levelA,  x, y+0, 'right');//アクターのLVを表示
+        this.drawText('進化',x, y + lineHeight * 1, width);
         this.resetTextColor();//この先の文字の色をリセットする
         this.drawText(actor.level, x+68, y+0, 'right');//アクターのLV実数時を表示
+        this.drawText($gameVariables.value(actor._actorId + 300),x+68, y + lineHeight * 1, width);//アクターID+300の変数の数字を表示（進化）
 
-        //this.drawActorClass(actor, x, bottom - lineHeight * 4, width);
-        //this.drawActorHp(actor, x, bottom - lineHeight * 3, width);
-        //this.drawActorMp(actor, x, bottom - lineHeight * 2, width);
         
     };
 
